@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>密室逃脫</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+        #game-container {
+            display: inline-block;
+            position: relative;
+        }
+        #password-container {
+            margin-top: 20px;
+        }
+        #password-input {
+            padding: 10px;
+            font-size: 1.2em;
+        }
+        #check-button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+        #success-message {
+            display: none;
+            color: green;
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+        #hint {
+            color: red;
+            font-size: 1em;
+        }
+        #exit-page {
+            display: none;
+        }
+        .return-button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>密室逃脫</h1>
+
+<!-- Starting Page -->
+<div id="start-page">
+    <img src="start_page.jpg" alt="Start Room" width="800" height="600">
+    <h2>請輸入關鍵字進入房間：</h2>
+    <input type="text" id="keyword-input" placeholder="輸入 鑰匙在陽台外垃圾筒下/鑰匙在電風扇的位置下/鑰匙在投影機布幕後面/鑰匙在書櫃第一排底下">
+    <button onclick="enterRoom()">進入房間</button>
+</div>
+
+<!-- Room Pages -->
+<div id="room-page" style="display: none;">
+    <img id="room-image" src="" alt="Room" width="800" height="600">
+    <div id="password-container">
+        <input type="text" id="password-input" placeholder="請輸入四位數密碼">
+        <button id="check-button" onclick="checkPassword()">確認</button>
+    </div>
+    <div id="hint"></div>
+    <div id="success-message">恭喜你！解鎖成功！</div>
+    <button class="return-button" onclick="returnToStart()">返回首頁</button>
+</div>
+
+<!-- Exit Page -->
+<div id="exit-page">
+    <img src="exit_page_updated.jpg" alt="Exit Page" width="800" height="600">
+    <h2>恭喜你成功逃脫！</h2>
+</div>
+
+<script>
+    const roomPasswords = {
+        "鑰匙在陽台外垃圾筒下": "2131",
+        "鑰匙在電風扇的位置下": "4141",
+        "鑰匙在投影機布幕後面": "1342",
+        "鑰匙在書櫃第一排底下": "3421"
+    };
+
+    const roomImages = {
+        "鑰匙在陽台外垃圾筒下": "room1.jpg",
+        "鑰匙在電風扇的位置下": "room2.jpg",
+        "鑰匙在投影機布幕後面": "room3.jpg",
+        "鑰匙在書櫃第一排底下": "room4.jpg"
+    };
+
+    function enterRoom() {
+        const keyword = document.getElementById('keyword-input').value.trim();
+        if (roomPasswords[keyword]) {
+            document.getElementById('start-page').style.display = 'none';
+            document.getElementById('room-page').style.display = 'block';
+            document.getElementById('room-image').src = roomImages[keyword];
+            currentRoom = keyword;
+        } else {
+            alert('無效的關鍵字！請重新輸入！');
+        }
+    }
+
+    let currentRoom = "";
+
+    function checkPassword() {
+        const passwordInput = document.getElementById('password-input').value;
+        const correctPassword = roomPasswords[currentRoom];
+
+        if (passwordInput === correctPassword) {
+            document.getElementById('success-message').style.display = 'block';
+            document.getElementById('hint').style.display = 'none';
+            // Show exit page as soon as any room is unlocked
+            setTimeout(function() {
+                document.getElementById('room-page').style.display = 'none';
+                document.getElementById('exit-page').style.display = 'block';
+            }, 1500);
+        } else {
+            document.getElementById('hint').innerText = '密碼錯誤，請再試一次！';
+        }
+    }
+
+    function returnToStart() {
+        document.getElementById('room-page').style.display = 'none';
+        document.getElementById('start-page').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
